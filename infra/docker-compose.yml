@@ -1,0 +1,58 @@
+# ==============================================================================
+# Kairos Local Development Infrastructure
+#
+# Services:
+# 1. timescaledb: PostgreSQL 16 with TimescaleDB extension for time-series candles
+# 2. redis: In-memory store for live market signals, job queues, and rate-limits
+#
+# Usage:
+#   Start services:    docker compose -f infra/docker-compose.yml up -d
+#   Check status:      docker compose -f infra/docker-compose.yml ps
+#   View logs:         docker compose -f infra/docker-compose.yml logs -f
+#   Stop services:     docker compose -f infra/docker-compose.yml down
+#   Reset (delete DB): docker compose -f infra/docker-compose.yml down -v
+# ==============================================================================
+
+services:
+  timescaledb:
+    image: timescale/timescaledb:2.14.2-pg16
+    container_name: kairos_timescaledb
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-kairos_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-kairos_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-kairos_db}
+    ports:
+      # Bound strictly to 127.0.0.1 (localhost only) to avoid external network exposure
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - timescaledb_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-kairos_user} -d $${POSTGRES_DB:-kairos_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    image: redis:7.2.7-alpine
+    container_name: kairos_redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      # Bound strictly to 127.0.0.1 (localhost only) to avoid external network exposure
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+volumes:
+  timescaledb_data:
+    name: kairos_timescaledb_data
+  redis_data:
+    name: kairos_redis_data

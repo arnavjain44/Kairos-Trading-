@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kairos"
+version = "0.1.0"
+description = "ML-based intraday trading research and recommendation system for Indian NSE cash equities"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    { name = "Arnav Jain" }
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.8.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["packages/core"]
+include = ["kairos_core*"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["packages/core/tests"]
+pythonpath = ["packages/core"]
+addopts = "-ra -q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+exclude = [
+    ".git",
+    ".venv",
+    "node_modules",
+    "build",
+    "dist",
+    "__pycache__",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP"]
+ignore = []
