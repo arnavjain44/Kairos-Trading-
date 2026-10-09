@@ -1,0 +1,14 @@
+{
+  "include": [
+    "packages/core",
+    "apps",
+    "workers",
+    "ml",
+    "scripts"
+  ],
+  "extraPaths": [
+    "packages/core"
+  ],
+  "venvPath": ".",
+  "venv": ".venv"
+}
