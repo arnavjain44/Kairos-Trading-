@@ -156,3 +156,4 @@ Comprehensive product and engineering documentation is maintained in the [`docs/
 * [Tech Stack and System Architecture](docs/Tech%20Stack%20and%20System%20Architecture.md)
 * [Design Doc: Landing Page and App Shell](docs/Design%20Doc%20Landing%20Page%20and%20App%20Shell.md)
 * [Kairos: Build Plan](docs/Kairos%20Build%20Plan.md)
+* [Transaction-Cost Engine Specification](docs/transaction_costs.md)
